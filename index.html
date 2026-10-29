@@ -6,9 +6,7 @@
 <title>미소앤봄 · 시술 후 주의사항 | MeSO×nBOM Aftercare</title>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#CFE7E1">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Noto+Sans+KR:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Noto+Sans+KR:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 <style>
 :root{
   --page:#FFFFFF; --band:#CFE7E1; --ink:#2C3A42; --ink2:#3E4C53; --muted:#66747A;
@@ -2814,7 +2812,7 @@ function bindSend(){
 }
 
 /* ---------- 시작: 구글 시트에서 문구 불러오기 ---------- */
-const CACHE_KEY = 'mesonbom-aftercare-content';
+const CACHE_KEY = 'mesonbom-aftercare-v2';
 let started = false;
 function valid(d){ return d && Array.isArray(d.procs) && d.procs.length && Array.isArray(d.cats); }
 function fetchJson(url, ms){
@@ -2846,24 +2844,39 @@ function loading(){
     + '<div class="spin"></div></div>';
 }
 (function boot(){
+  // 1) 이 기기에 저장된 내용 또는 GitHub의 content.json으로 바로 화면을 띄우고
+  // 2) 구글 시트(최신 문구)는 뒤에서 조용히 확인해, 다르면 새 내용으로 바꿉니다.
   const url = String(window.AFTERCARE_DATA_URL || '');
-  const live = /^https:\/\/script\.google(usercontent)?\.com\//.test(url)
-    ? fetchJson(url + (url.indexOf('?') < 0 ? '?' : '&') + 'format=json', 12000)
-    : Promise.reject(new Error('no data url'));
   let cached = null;
   try { cached = JSON.parse(localStorage.getItem(CACHE_KEY)); } catch(e) {}
-  const save = d => { try { localStorage.setItem(CACHE_KEY, JSON.stringify(d)); } catch(e) {} return d; };
-  if (valid(cached)) {
-    start(cached);
-    live.then(d => { save(d); if (JSON.stringify(d) !== JSON.stringify(cached)) start(d); }).catch(() => {});
-    return;
-  }
-  loading();
-  live.then(save)
-    .catch(() => fetchJson('content.json', 8000))
-    .then(start)
+  if (!cached || !valid(cached.data)) cached = null;
+  let shown = null;
+  const show = (d, src) => {
+    if (shown && JSON.stringify(shown) === JSON.stringify(d)) return;
+    shown = d;
+    try { localStorage.setItem(CACHE_KEY, JSON.stringify({src: src, data: d})); } catch(e) {}
+    start(d);
+  };
+  if (cached) { shown = cached.data; start(cached.data); } else { loading(); }
+
+  const file = fetchJson('content.json?v=' + Math.floor(Date.now() / 600000), 10000);
+  const live = /^https:\/\/script\.google(usercontent)?\.com\//.test(url)
+    ? fetchJson(url + (url.indexOf('?') < 0 ? '?' : '&') + 'format=json', 15000)
+    : Promise.reject(new Error('no data url'));
+  let liveDone = false;
+
+  // 저장된 내용이 없으면 content.json이 오는 대로 바로 표시
+  file.then(d => {
+    if (liveDone) return;
+    if (!cached || cached.src === 'file') show(d, 'file');
+  }).catch(() => {});
+  // 구글 시트 최신 내용이 오면 그걸로 교체
+  live.then(d => { liveDone = true; show(d, 'live'); })
     .catch(() => {
-      document.getElementById('app').innerHTML = '<div class="wrap" style="padding-top:60px;text-align:center"><p>화면을 불러오지 못했어요. 잠시 후 다시 열어주세요.</p><p style="margin-top:8px;color:var(--muted)">Please try again in a moment. · 02-6952-0147</p></div>';
+      // 시트에 연결이 안 되는 곳(중국 로밍 등): content.json도 실패하고 보여줄 내용이 없을 때만 안내
+      file.catch(() => {
+        if (!shown) document.getElementById('app').innerHTML = '<div class="wrap" style="padding-top:60px;text-align:center"><p>화면을 불러오지 못했어요. 잠시 후 다시 열어주세요.</p><p style="margin-top:8px;color:var(--muted)">Please try again in a moment. · +82-2-6952-0147</p></div>';
+      });
     });
 })();
 </script>
