@@ -6,7 +6,7 @@
 <title>미소앤봄 · 시술 후 주의사항 | MeSO×nBOM Aftercare</title>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#CFE7E1">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Noto+Sans+KR:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Noto+Sans+KR:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 <style>
 :root{
   --page:#FFFFFF; --band:#CFE7E1; --ink:#2C3A42; --ink2:#3E4C53; --muted:#66747A;
@@ -18,6 +18,7 @@
   --sans:'Noto Sans KR',system-ui,-apple-system,sans-serif;
 }
 html[lang="zh-Hans"]{--sans:'Noto Sans SC','Noto Sans KR',system-ui,sans-serif}
+html[lang="ja"]{--sans:'Noto Sans JP','Noto Sans KR',system-ui,sans-serif}
 html[lang="zh-Hant"]{--sans:'Noto Sans TC','Noto Sans KR',system-ui,sans-serif}
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--page);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased}
@@ -31,8 +32,8 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--primary);outline-of
 .brand{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .brand img{display:block;height:32px;width:auto}
 .brand .kr{font-size:13px;letter-spacing:4px;color:var(--primary-dk);font-weight:600}
-.langs{display:flex;gap:6px;margin-top:14px}
-.lang{flex:1 1 0;min-height:40px;padding:0 4px;border-radius:999px;border:1.5px solid var(--line);background:#FFFFFF;font-size:13px;font-weight:500;color:var(--ink2);text-align:center;white-space:nowrap}
+.langs{display:flex;gap:5px;margin-top:14px}
+.lang{flex:1 1 0;min-width:0;min-height:40px;padding:0 2px;border-radius:999px;border:1.5px solid var(--line);background:#FFFFFF;font-size:12.5px;letter-spacing:-.2px;font-weight:500;color:var(--ink2);text-align:center;white-space:nowrap}
 .lang.on{background:var(--on);border-color:var(--on-bd);color:var(--primary-dk);font-weight:700}
 
 /* home */
@@ -129,7 +130,10 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--primary);outline-of
 .mact{display:flex;gap:6px;flex:0 0 auto}
 .mbtn{min-height:38px;padding:0 12px;border-radius:999px;border:1.5px solid var(--on-bd);background:var(--on);color:var(--primary-dk);font-size:13px;font-weight:600;display:inline-flex;align-items:center;text-decoration:none;white-space:nowrap}
 
-.proc .nm b,.proc .nm small,.dt h1,.dt small,.chip,.multi-nav button,.card b,.card small,.sec li,.mtxt span,.sec.area summary{overflow-wrap:anywhere;word-break:normal}
+.proc .nm b,.proc .nm small,.dt h1,.dt small,.chip,.multi-nav button,.card b,.card small,.sec li,.sec.area summary{overflow-wrap:anywhere;word-break:normal}
+.mtxt{flex:1 1 auto}
+.mtxt span{white-space:nowrap}
+@media (max-width:370px){.mbtn{padding:0 9px;font-size:12px}.mact{gap:4px}}
 .chip{text-align:left;line-height:1.35;padding-top:8px;padding-bottom:8px}
 .card > div:last-child{min-width:0}
 
@@ -2481,7 +2485,7 @@ let CONTENT = null;
 const PARAMS = Object.fromEntries(new URLSearchParams(location.search));
 const APP_URL = location.origin + location.pathname;
 
-const LANGS = [['ko','한국어'],['en','English'],['zh-Hans','简体'],['zh-Hant','繁體'],['es','Español']];
+const LANGS = [['ko','한국어'],['en','English'],['ja','日本語'],['zh-Hans','简体'],['zh-Hant','繁體'],['es','Español']];
 const LCODES = LANGS.map(x => x[0]);
 const UI = {
   'ko':{orL:'전화 대신 메신저로도 연락하실 수 있어요',copyId:'ID 복사',open:'열기',idL:'ID',wechat:'위챗 (WeChat)',line:'라인 (LINE)',wa:'왓츠앱 (WhatsApp)',ig:'인스타그램 DM',waNote:'+82-10-3421-5677 번호를 연락처에 저장한 뒤 왓츠앱으로 메시지를 보내주세요.',copied:'복사했어요',title:'시술 후 주의사항',sub:'오늘 받으신 시술을 눌러주세요',back:'시술 목록',
@@ -2504,6 +2508,16 @@ const UI = {
     addrL:'Address',addr:'7F, 162 Yanghwa-ro, Mapo-gu, Seoul (Hongik Univ. Station)',
     disc:'This is general guidance. If your doctor gave you different instructions, please follow those first.',
     pending:'English translation is in progress. Korean text is shown for now.'},
+  'ja':{orL:'メッセンジャーでもお問い合わせいただけます',copyId:'IDをコピー',open:'開く',idL:'ID',wechat:'WeChat',line:'LINE',wa:'WhatsApp',ig:'Instagram DM',waNote:'+82-10-3421-5677 を連絡先に保存してから、WhatsAppでメッセージをお送りください。',copied:'コピーしました',title:'施術後の注意事項',sub:'本日受けた施術をタップしてください',back:'施術一覧',
+    cat:{laser:'レーザー',lift:'リフティング',needle:'ニードル施術',inject:'注射施術',body:'輪郭・ボディ施術',acne:'ニキビ',care:'スキンケア',anesth:'麻酔'},
+    sec:{day:'施術当日',recovery:'回復期間',call:'次のような症状があればすぐにご連絡ください'},
+    pick:'受けた施術を選んでください',
+    tip:'複数の施術を受けた場合は、それぞれの注意事項をすべてご確認ください。',
+    also:'受けた施術',q:'ご不明な点はありますか？',callBtn:'クリニックに電話する',phone:'+82-2-6952-0147',
+    hoursL:'診療時間',hours:'月・火・木・金 10:00–20:00（昼休み 14:00–15:00）<br>土・日 10:00–16:30 · 水曜休診',
+    addrL:'住所',addr:'ソウル市麻浦区楊花路162 7階（弘大入口駅）',
+    disc:'このご案内は一般的な内容です。担当医から別途ご案内があった場合は、そちらを優先してください。',
+    pending:'日本語訳を準備中です。現在は韓国語で表示しています。'},
   'zh-Hans':{orL:'也可以通过以下方式联系我们',copyId:'复制ID',open:'打开',idL:'ID',wechat:'微信 (WeChat)',line:'LINE',wa:'WhatsApp',ig:'Instagram 私信',waNote:'请将 +82-10-3421-5677 保存到通讯录后，通过 WhatsApp 联系我们。',copied:'已复制',title:'术后注意事项',sub:'请点击您今天接受的项目',back:'项目列表',
     cat:{laser:'激光',lift:'提升',needle:'微针类项目',inject:'注射',body:'轮廓·身体',acne:'痘痘',care:'皮肤护理',anesth:'麻醉'},
     sec:{day:'治疗当天',recovery:'恢复期间',call:'出现以下情况请立即联系我们'},
@@ -2569,6 +2583,7 @@ function pickLang(){
   if (n.indexOf('ko') === 0) return 'ko';
   if (n.indexOf('zh') === 0) return /tw|hk|mo|hant/.test(n) ? 'zh-Hant' : 'zh-Hans';
   if (n.indexOf('es') === 0) return 'es';
+  if (n.indexOf('ja') === 0) return 'ja';
   return 'en';
 }
 let lang = pickLang();
@@ -2719,6 +2734,7 @@ function renderQR(){
     + '<div><div class="t-ko">시술 후 주의사항</div><div class="t-en">Aftercare Instructions</div></div>'
     + '<div class="qrbox"><div id="qr-main"></div></div>'
     + '<div class="scan"><div>휴대폰 카메라로 QR을 비춰 주세요</div><div>Scan with your phone camera</div>'
+    + '<div lang="ja">スマートフォンのカメラでQRを読み取ってください · 施術後の注意事項</div>'
     + '<div lang="zh-Hans">请用手机相机扫描二维码 · 术后注意事项</div><div lang="zh-Hant">請用手機相機掃描 QR 碼 · 術後注意事項</div>'
     + '<div>Escanee con la cámara de su móvil · Cuidados posteriores</div></div>'
     + '</div></div>';
@@ -2755,6 +2771,7 @@ function renderQR(){
 const SMS = {
   'ko': '[미소앤봄의원] 오늘 받으신 시술의 주의사항을 안내드립니다. 아래 링크에서 확인해 주세요.\n{link}\n궁금한 점은 02-6952-0147로 연락 주세요.',
   'en': '[MeSO×nBOM Clinic] Here are the aftercare instructions for your treatment today:\n{link}\nQuestions? Call +82-2-6952-0147.',
+  'ja': '【MeSO×nBOM クリニック】本日受けた施術の注意事項をご案内します。下記リンクからご確認ください。\n{link}\nご不明な点は +82-2-6952-0147 までご連絡ください。',
   'zh-Hans': '【MeSO×nBOM 诊所】这是您今天所做项目的术后注意事项，请点击查看：\n{link}\n如有疑问请致电 +82-2-6952-0147。',
   'zh-Hant': '【MeSO×nBOM 診所】這是您今天療程的術後注意事項，請點擊查看：\n{link}\n如有疑問請致電 +82-2-6952-0147。',
   'es': '[Clínica MeSO×nBOM] Estas son las indicaciones de cuidado para su tratamiento de hoy:\n{link}\n¿Preguntas? Llame al +82-2-6952-0147.'
@@ -2818,7 +2835,7 @@ function bindSend(){
 }
 
 /* ---------- 시작: 구글 시트에서 문구 불러오기 ---------- */
-const CACHE_KEY = 'mesonbom-aftercare-v2';
+const CACHE_KEY = 'mesonbom-aftercare-v3';
 let started = false;
 function valid(d){ return d && Array.isArray(d.procs) && d.procs.length && Array.isArray(d.cats); }
 function fetchJson(url, ms){
@@ -2849,9 +2866,35 @@ function loading(){
     + '<img src="'+LOGO+'" alt="MeSO×nBOM" style="height:36px;width:auto">'
     + '<div class="spin"></div></div>';
 }
+/* 시트에 아직 없는 언어(예: 일본어)는 GitHub의 content.json 번역으로 채워 넣기 */
+function textDicts(d){
+  const out = [];
+  (d.procs || []).forEach(p => {
+    out.push(p.name); if (p.group) out.push(p.group.name);
+    (p.sections || []).forEach(s => {
+      if (s.title) out.push(s.title);
+      (s.items || []).forEach(it => { if (it.label) { out.push(it.label); (it.sub || []).forEach(x => out.push(x)); } else out.push(it.t); });
+    });
+  });
+  return out.filter(Boolean);
+}
+function mergeLangs(live, file){
+  if (!file) return live;
+  const byKo = {};
+  textDicts(file).forEach(t => { if (t.ko) byKo[t.ko] = t; });
+  const d = JSON.parse(JSON.stringify(live));
+  textDicts(d).forEach(t => {
+    const src = byKo[t.ko];
+    if (!src) return;
+    LCODES.forEach(l => { if (!t[l] && src[l]) t[l] = src[l]; });
+  });
+  return d;
+}
+
 (function boot(){
   // 1) 이 기기에 저장된 내용 또는 GitHub의 content.json으로 바로 화면을 띄우고
   // 2) 구글 시트(최신 문구)는 뒤에서 조용히 확인해, 다르면 새 내용으로 바꿉니다.
+  //    시트에 비어 있는 언어 칸은 content.json 번역으로 채웁니다.
   const url = String(window.AFTERCARE_DATA_URL || '');
   let cached = null;
   try { cached = JSON.parse(localStorage.getItem(CACHE_KEY)); } catch(e) {}
@@ -2866,20 +2909,18 @@ function loading(){
   if (cached) { shown = cached.data; start(cached.data); } else { loading(); }
 
   const file = fetchJson('content.json?v=' + Math.floor(Date.now() / 600000), 10000);
+  const fileOrNull = file.catch(() => null);
   const live = /^https:\/\/script\.google(usercontent)?\.com\//.test(url)
     ? fetchJson(url + (url.indexOf('?') < 0 ? '?' : '&') + 'format=json', 15000)
     : Promise.reject(new Error('no data url'));
   let liveDone = false;
 
-  // 저장된 내용이 없으면 content.json이 오는 대로 바로 표시
   file.then(d => {
     if (liveDone) return;
     if (!cached || cached.src === 'file') show(d, 'file');
   }).catch(() => {});
-  // 구글 시트 최신 내용이 오면 그걸로 교체
-  live.then(d => { liveDone = true; show(d, 'live'); })
+  live.then(d => fileOrNull.then(f => { liveDone = true; show(mergeLangs(d, f), 'live'); }))
     .catch(() => {
-      // 시트에 연결이 안 되는 곳(중국 로밍 등): content.json도 실패하고 보여줄 내용이 없을 때만 안내
       file.catch(() => {
         if (!shown) document.getElementById('app').innerHTML = '<div class="wrap" style="padding-top:60px;text-align:center"><p>화면을 불러오지 못했어요. 잠시 후 다시 열어주세요.</p><p style="margin-top:8px;color:var(--muted)">Please try again in a moment. · +82-2-6952-0147</p></div>';
       });
